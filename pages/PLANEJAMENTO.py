@@ -6,7 +6,7 @@ import os
 from utils import *
 
 # Função para carregar dados da planilha do Google Sheets, com cache
-@st.cache_data(ttl=600)  # Armazena em cache por 10 minutos
+# Armazena em cache por 10 minutos
 def carregar_dados_bd():
     client = connect_google_sheet() 
 
