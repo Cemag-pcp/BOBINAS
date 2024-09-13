@@ -3,18 +3,45 @@ import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
+# from dotenv import load_env
+from google.oauth2 import service_account
+
+from utils import *
+
+
+# load_dotenv()  # Carrega as variáveis do arquivo .env
+# # load_dotenv(override=True)
+
+# credentials_info = {
+#     "type": os.environ.get('GOOGLE_TYPE'),
+#     "project_id": os.environ.get('GOOGLE_PROJECT_ID'),
+#     "private_key_id": os.environ.get('GOOGLE_PRIVATE_KEY_ID'),
+#     "private_key": os.environ.get('GOOGLE_PRIVATE_KEY'),
+#     "client_email": os.environ.get('GOOGLE_CLIENT_EMAIL'),
+#     "client_id": os.environ.get('GOOGLE_CLIENT_ID'),
+#     "auth_uri": os.environ.get('GOOGLE_AUTH_URI'),
+#     "token_uri": os.environ.get('GOOGLE_TOKEN_URI'),
+#     "auth_provider_x509_cert_url": os.environ.get('GOOGLE_AUTH_PROVIDER_X509_CERT_URL'),
+#     "client_x509_cert_url": os.environ.get('GOOGLE_CLIENT_X509_CERT_URL'),
+#     "universe_domain": os.environ.get('GOOGLE_UNIVERSE_DOMAIN')
+# }
+
+# # Criar as credenciais a partir das informações da conta de serviço
+# credentials = service_account.Credentials.from_service_account_info(credentials_info, scopes=scope)
+
+# # sa = gspread.service_account(credentials)
+# sa = gspread.authorize(credentials)
+
+# sh = sa.open_by_key(sheet_id)
+
+# wks1 = sh.worksheet(worksheet1)
 
 # Função para carregar dados da planilha de planejamento de bobinas, com cache
 @st.cache_data(ttl=600)  # Armazena em cache os dados por 10 minutos
 def carregar_dados_planejamento():
-    cred_path = 'credentials.json'
-    if not os.path.exists(cred_path):
-        st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-        return None
-
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-    client = gspread.authorize(creds)
+    
+    # Connect to Google Sheets
+    client = connect_google_sheet()
 
     document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
     planilha1 = client.open_by_key(document_id)
@@ -28,14 +55,7 @@ def carregar_dados_planejamento():
 # Função para carregar dados da planilha de peças pendentes, com cache
 @st.cache_data(ttl=600)
 def carregar_dados_planejamento_pecas():
-    cred_path = 'credentials.json'
-    if not os.path.exists(cred_path):
-        st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-        return None
-
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-    client = gspread.authorize(creds)
+    client = connect_google_sheet()
 
     document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
     planilha1 = client.open_by_key(document_id)
@@ -49,14 +69,7 @@ def carregar_dados_planejamento_pecas():
 # Função para carregar dados da planilha de apontamento de chapas, com cache
 @st.cache_data(ttl=600)
 def carregar_dados_apontamento_chapas():
-    cred_path = 'credentials.json'
-    if not os.path.exists(cred_path):
-        st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-        return None
-
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-    client = gspread.authorize(creds)
+    client = connect_google_sheet()
 
     document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
     planilha1 = client.open_by_key(document_id)
@@ -70,14 +83,7 @@ def carregar_dados_apontamento_chapas():
 # Função para carregar dados da planilha de apontamento de peças, com cache
 @st.cache_data(ttl=600)
 def carregar_dados_apontamento_pecas():
-    cred_path = 'credentials.json'
-    if not os.path.exists(cred_path):
-        st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-        return None
-
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-    client = gspread.authorize(creds)
+    client = connect_google_sheet()
 
     document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
     planilha1 = client.open_by_key(document_id)
@@ -194,15 +200,7 @@ def main():
     submit_button = st.button("Apontar Dados")
 
     if submit_button:
-        cred_path = 'credentials.json'
-        if not os.path.exists(cred_path):
-            st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-            return
-
-        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-        creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-        client = gspread.authorize(creds)
-
+        client = connect_google_sheet()
         document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
         planilha1 = client.open_by_key(document_id)
 

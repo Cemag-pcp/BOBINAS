@@ -3,18 +3,12 @@ import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
+from utils import *
 
 # Função para carregar dados da planilha do Google Sheets, com cache
 @st.cache_data(ttl=600)  # Armazena em cache por 10 minutos
 def carregar_dados_bd():
-    cred_path = 'credentials.json'
-    if not os.path.exists(cred_path):
-        st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-        return None
-
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-    client = gspread.authorize(creds)
+    client = connect_google_sheet() 
 
     document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
     planilha1 = client.open_by_key(document_id)
@@ -28,14 +22,7 @@ def carregar_dados_bd():
 # Função para carregar dados da planilha de planejamento de chapas, com cache
 @st.cache_data(ttl=600)  # Armazena em cache por 10 minutos
 def carregar_dados_planejamento_chapas():
-    cred_path = 'credentials.json'
-    if not os.path.exists(cred_path):
-        st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-        return None
-
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-    client = gspread.authorize(creds)
+    client = connect_google_sheet() 
 
     document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
     planilha1 = client.open_by_key(document_id)
@@ -49,14 +36,7 @@ def carregar_dados_planejamento_chapas():
 # Função para carregar dados da planilha de planejamento de peças, com cache
 @st.cache_data(ttl=600)  # Armazena em cache por 10 minutos
 def carregar_dados_planejamento_pecas():
-    cred_path = 'credentials.json'
-    if not os.path.exists(cred_path):
-        st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-        return None
-
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-    client = gspread.authorize(creds)
+    client = connect_google_sheet() 
 
     document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
     planilha1 = client.open_by_key(document_id)
@@ -136,8 +116,8 @@ if df is not None:
             # Gerar campos dinamicamente com base no número de chapas
             for i in range(int(number_chapas)):
                 st.write(f"##### Medida {i + 1}")
-                comp_total = st.number_input(f'Comprimento - {i + 1}', min_value=0.0, step=0.1, key=f'comp_total_{i}')
-                qtd_chapas = st.number_input(f'Qtd chapas - {i + 1}', min_value=1, step=1, key=f'qtd_chapas_{i}')
+                comp_total = st.number_input(f'Comprimento  {i + 1}', min_value=0.0, step=0.1, key=f'comp_total_{i}')
+                qtd_chapas = st.number_input(f'Qtd chapas  {i + 1}', min_value=1, step=1, key=f'qtd_chapas_{i}')
 
                 comprimentos.append(comp_total)
                 quantidades_chapas.append(qtd_chapas)
@@ -151,7 +131,7 @@ if df is not None:
             for i in range(int(number_pecas)):
                 st.write(f"##### Peça {i + 1}")
                 peca = st.text_input(f'Peça {i + 1}', key=f'peca_{i}')
-                qtd_pecas = st.number_input(f'Qtd peças - {i + 1}', min_value=1, step=1, key=f'qtd_pecas_{i}')
+                qtd_pecas = st.number_input(f'Qtd peças {i + 1}', min_value=1, step=1, key=f'qtd_pecas_{i}')
 
                 pecas.append(peca)
                 quantidades_pecas.append(qtd_pecas)
@@ -160,15 +140,7 @@ if df is not None:
         submit_button = st.button("Atualizar Planilhas")
 
         if submit_button:
-            # Atualizar os dados no Google Sheets
-            cred_path = 'credentials.json'
-            if not os.path.exists(cred_path):
-                st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-
-            scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-            creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-            client = gspread.authorize(creds)
-
+            client = connect_google_sheet()
             document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
 
             # Atualização para chapas

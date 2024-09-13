@@ -3,22 +3,15 @@ import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
+from google.oauth2 import service_account
 
+from utils import *
 # Função para carregar dados da planilha
 def carregar_dados_bd():
-    cred_path = 'credentials.json'
-    if not os.path.exists(cred_path):
-        st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-        return None
+    
+    client = connect_google_sheet() 
 
-    # Configurações de autenticação e escopo
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    try:
-        creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-        client = gspread.authorize(creds)
-    except Exception as e:
-        st.error(f"Erro ao autenticar com Google Sheets: {e}")
-        return None
+
 
     # Substitua pelo ID correto da sua planilha
     document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
@@ -39,18 +32,7 @@ def carregar_dados_bd():
 
 # Função para salvar dados no Google Sheets
 def save_data_google_sheets(data, colunas_para_atualizar):
-    cred_path = 'credentials.json'
-    if not os.path.exists(cred_path):
-        st.error(f"Arquivo de credenciais não encontrado: {cred_path}")
-        return
-    
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    try:
-        creds = ServiceAccountCredentials.from_json_keyfile_name(cred_path, scope)
-        client = gspread.authorize(creds)
-    except Exception as e:
-        st.error(f"Erro ao autenticar com Google Sheets: {e}")
-        return
+    client = connect_google_sheet() 
 
     document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
     try:
