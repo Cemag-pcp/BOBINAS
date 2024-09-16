@@ -11,8 +11,6 @@ def carregar_dados_bd():
     
     client = connect_google_sheet() 
 
-
-
     # Substitua pelo ID correto da sua planilha
     document_id = '16atY486fScsRTrLsh9OGUjYsYwiIkX4IRovD19wKdVk'
     try:
@@ -81,7 +79,7 @@ def main():
 
     if submit_button:
         if largura and espessura and peso_real:
-            data = [identificador, largura, espessura, peso_real, peso_nota_fiscal, submit_button]
+            data = [identificador, largura, espessura, peso_real, peso_nota_fiscal, nota_fiscal]
             colunas_para_atualizar = ['ID BOBINA', 'LARGURA', 'ESPESSURA', 'PESO REAL', 'PESO NOTA FISCAL','NOTA FISCAL']  # Colunas que você deseja atualizar
             save_data_google_sheets(data, colunas_para_atualizar)
         else:
