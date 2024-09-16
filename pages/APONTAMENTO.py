@@ -240,7 +240,6 @@ def main():
 
         if success:
             st.success('Apontamentos realizados com sucesso!')
-            st.cache_data.clear()  # Limpa o cache para forçar o recarregamento dos dados
             reset_form()  # Limpar os valores inseridos após o envio
         else:
             st.error('Por favor, preencha todos os campos necessários.')
