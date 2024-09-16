@@ -76,12 +76,13 @@ def main():
         espessura = st.number_input('Espessura', min_value=0.0, step=0.1)
         peso_real = st.number_input('Peso Real', min_value=0.0, step=0.1)
         peso_nota_fiscal = st.number_input('Peso Nota Fiscal', min_value=0.0, step=0.1)
+        nota_fiscal = st.text_input('NOTA FISCAL')
         submit_button = st.form_submit_button(label='Cadastrar')
 
     if submit_button:
         if largura and espessura and peso_real:
-            data = [identificador, largura, espessura, peso_real, peso_nota_fiscal]
-            colunas_para_atualizar = ['ID BOBINA', 'LARGURA', 'ESPESSURA', 'PESO REAL', 'PESO NOTA FISCAL']  # Colunas que você deseja atualizar
+            data = [identificador, largura, espessura, peso_real, peso_nota_fiscal, submit_button]
+            colunas_para_atualizar = ['ID BOBINA', 'LARGURA', 'ESPESSURA', 'PESO REAL', 'PESO NOTA FISCAL','NOTA FISCAL']  # Colunas que você deseja atualizar
             save_data_google_sheets(data, colunas_para_atualizar)
         else:
             st.error('Por favor, preencha todos os campos.')
